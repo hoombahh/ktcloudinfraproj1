@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kubeai-models #app to deploy model
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://www.kubeai.org
+    targetRevision: "*"
+    chart: models
+    helm:
+      values: |
+        catalog:
+          tinyllama-cpu:
+            enabled: true
+            features: [TextGeneration]
+            url: 'ollama://tinyllama:latest'
+            engine: OLlama
+            minReplicas: 1
+            resourceProfile: 'cpu:1'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

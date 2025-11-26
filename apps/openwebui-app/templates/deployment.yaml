@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwebui-deployment
+  labels:
+    app: openwebui
+    app.kubernetes.io/name: openwebui
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  replicas: 1 # CronJob 기반 스케일링을 위해 기본값 1
+  selector:
+    matchLabels:
+      app: openwebui
+  template:
+    metadata:
+      labels:
+        app: openwebui
+    spec:
+      containers:
+      - name: openwebui
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.port }}

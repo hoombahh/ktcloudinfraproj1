@@ -1,0 +1,10 @@
+image:
+  repository: "172.26.10.111:30003/project-a/openwebui"
+  tag: "latest" 
+  pullPolicy: IfNotPresent
+
+
+service:
+  type: NodePort
+  port: 8888 # OpenWebUI 컨테이너 포트
+  nodePort: 31815 # 외부 접근을 위한 NodePort

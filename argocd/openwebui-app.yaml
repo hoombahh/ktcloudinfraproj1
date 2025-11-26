@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openwebui-deployment
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://www.kubeai.org
+    targetRevision: "*"
+    chart: kubeai
+    helm:
+      values: |
+        open-webui:
+          persistence:
+            enabled: false
+          service:
+            type: LoadBalancer
+            port: 8888
+            containerPort: 8080
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
